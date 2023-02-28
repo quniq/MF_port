@@ -841,10 +841,10 @@ async def generate_portfolio(investAmount=10_000,
              algo_asset_universe_3.split("-"),
              algo_asset_universe_tax.split("-")]
 
-    # asset_universe = [
-    #     mf_asset_universe, mf_asset_universe_1, mf_asset_universe_2,
-    #     mf_asset_universe_3, mf_asset_universe_tax
-    # ]
+    asset_universe = [
+        mf_asset_universe, mf_asset_universe_1, mf_asset_universe_2,
+        mf_asset_universe_3, mf_asset_universe_tax
+    ]
 
     data_per_universe = [
         data3.loc[:, data3.columns.isin(mf_asset_universe["ISIN"].to_list())],
@@ -870,7 +870,8 @@ async def generate_portfolio(investAmount=10_000,
         Y = data_per_universe[_x].pct_change().dropna()
 
         # Industry & Sector data
-        industry = mf_asset_universe[['ISIN', 'Industry', 'Sector']]
+        industry = asset_universe[_x][['ISIN', 'Industry', 'Sector']]
+        print(industry)
         """
         Backtesting 
         """
