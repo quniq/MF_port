@@ -88,7 +88,7 @@ async def generate_portfolio(investAmount=10_000,
                              startDate='2021-11-29',
                              rbRule='Y',
                              rbWindow=1260,
-                             TCDollarRupee=75,
+                             TCDollarRupee=82,
                              backtest='no'):
     """
     Function to generate the portfolio
@@ -849,17 +849,12 @@ async def generate_portfolio(investAmount=10_000,
         data3.loc[:, data3.columns.isin(mf_asset_universe_tax["ISIN"].to_list())]
     ]
 
-    if taxSaving == 'no':
-        algos = algos[:-1]
-        data_per_universe = data_per_universe[:-1]
-    else:
-        algos = algos[0] + algos[:-1]
-        data_per_universe = data_per_universe[0] + data_per_universe[:-1]
+    portfolio_names = ["dummy", "Simple", "Classic", "Berrywise", "TaxSaving"]
 
     # output json holding all the portfolio values, stats, and holdings
     final_output = {}
 
-    for idx, x in enumerate(algos):
+    for _x, x in enumerate(algos):
         print("Selected algo: ", x)
 
         """
@@ -867,7 +862,7 @@ async def generate_portfolio(investAmount=10_000,
         """
 
         # Price data
-        Y = data_per_universe[idx].pct_change().dropna()
+        Y = data_per_universe[_x].pct_change().dropna()
 
         # Industry & Sector data
         industry = mf_asset_universe[['ISIN', 'Industry', 'Sector']]
@@ -930,7 +925,7 @@ async def generate_portfolio(investAmount=10_000,
         vbt.settings.returns['year_freq'] = '252 days'
 
         num_tests = 2000
-        ann_factor = data_per_universe[idx].vbt.returns(freq='D').ann_factor
+        ann_factor = data_per_universe[_x].vbt.returns(freq='D').ann_factor
 
         def prep_func_nb(simc, every_nth):
             # Define rebalancing days
@@ -1105,7 +1100,7 @@ async def generate_portfolio(investAmount=10_000,
         portfolio = {}
 
         k, j, i = x[0], x[1], x[2]
-        sharpe[k + "-" + j + "-" + i] = np.full(data_per_universe[idx].shape[0], np.nan)
+        sharpe[k + "-" + j + "-" + i] = np.full(data_per_universe[_x].shape[0], np.nan)
         print(k + "-" + j + "-" + i)
 
         # print(data_per_universe[idx].dtypes, data_per_universe[idx].shape, type(data_per_universe[idx]))
@@ -1116,15 +1111,14 @@ async def generate_portfolio(investAmount=10_000,
 
         # Run simulation with a custom order function (Numba should be disabled)
         portfolio[k + "-" + j + "-" + i] = vbt.Portfolio.from_order_func(
-            data_per_universe[idx],
+            data_per_universe[_x],
             order_func_nb,
             prep_func_nb=prep_func_nb,
             prep_args=(
-                252,
-            ),  # Cambiando la frecuencia de rebalanceo de 21 a 252
+                252, ),  # Cambiando la frecuencia de rebalanceo de 21 a 252
             segment_prep_func_nb=segment_prep_func_nb,
             segment_prep_args=(opt_weights, i, j, k, 252 * 5, ann_factor,
-                                num_tests, sharpe[k + "-" + j + "-" + i]),
+                               num_tests, sharpe[k + "-" + j + "-" + i]),
             cash_sharing=True,
             group_by=True,
             freq='D',
@@ -1217,6 +1211,14 @@ async def generate_portfolio(investAmount=10_000,
         algo_output['pd_hodl'] = jsonable_encoder(pd_hodl.fillna("").to_dict())
 
         # update the algo_output in the final output dict
-        final_output[algo_name[0]] = algo_output
+        print(portfolio_names[_x])
+        final_output[portfolio_names[_x]] = algo_output
+
+    if taxSaving == 'yes':
+        # return last algo output
+        return final_output["TaxSaving"]
+
+    # drop dummy algo output
+    final_output.pop("dummy", None)
 
     return final_output
