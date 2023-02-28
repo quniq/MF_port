@@ -210,6 +210,11 @@ async def generate_portfolio(investAmount=10_000,
 
     # define the risk profile and goals
 
+    mf_asset_universe_1 = None
+    mf_asset_universe_2 = None
+    mf_asset_universe_3 = None
+    mf_asset_universe_tax = None
+
     algo_asset_universe_1 = ""
     algo_asset_universe_2 = ""
     algo_asset_universe_3 = ""
@@ -233,7 +238,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 2:
+        elif int(goal) == 2:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
@@ -248,7 +253,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 3:
+        elif int(goal) == 3:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Dynamic", "Floating"])]
@@ -263,7 +268,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "CreditRisk"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 4:
+        elif int(goal) == 4:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["BankingPSU", "GILT", "Long", "GILTConstant"])]
@@ -278,7 +283,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Dynamic", "Floating"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 5:
+        elif int(goal) == 5:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Dynamic", "Floating"])]
@@ -293,7 +298,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Dynamic", "Floating"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 6:
+        elif int(goal) == 6:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Gold", "Liquid", "Dynamic", "Floating"])]
@@ -308,7 +313,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 7:
+        elif int(goal) == 7:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Dynamic", "Floating"])]
@@ -323,7 +328,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 8:
+        elif int(goal) == 8:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "CreditRisk"])]
@@ -341,7 +346,7 @@ async def generate_portfolio(investAmount=10_000,
     # moderate risk profile
     elif risk_profile == 2:
         # capital protection
-        if goal == 1:
+        if int(goal) == 1:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Dynamic", "Floating"])]
@@ -356,7 +361,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 2:
+        elif int(goal) == 2:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Dynamic", "Floating", "Arbitrage"])]
@@ -371,7 +376,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "CreditRisk"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 3:
+        elif int(goal) == 3:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["MultiAsset", "Conservative"])]
@@ -386,7 +391,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Balanced", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 4:
+        elif int(goal) == 4:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Balanced", "Corporate"])]
@@ -401,7 +406,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 5:
+        elif int(goal) == 5:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "Arbitrage"])]
@@ -416,7 +421,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 6:
+        elif int(goal) == 6:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
@@ -431,7 +436,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 7:
+        elif int(goal) == 7:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["MultiAsset", "Conservative"])]
@@ -446,7 +451,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 8:
+        elif int(goal) == 8:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["MultiAsset", "Conservative"])]
@@ -464,7 +469,7 @@ async def generate_portfolio(investAmount=10_000,
     # balanced risk profile
     elif risk_profile == 3:
         # capital protection
-        if goal == 1:
+        if int(goal) == 1:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
@@ -479,7 +484,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 2:
+        elif int(goal) == 2:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Balanced"])]
@@ -494,7 +499,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 3:
+        elif int(goal) == 3:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Balanced"])]
@@ -509,7 +514,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "Aggressive"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 4:
+        elif int(goal) == 4:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Balanced"])]
@@ -524,7 +529,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 5:
+        elif int(goal) == 5:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Balanced", "Aggressive"])]
@@ -539,7 +544,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 6:
+        elif int(goal) == 6:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Balanced", "Conservative"])]
@@ -554,7 +559,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 7:
+        elif int(goal) == 7:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Balanced"])]
@@ -569,7 +574,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 8:
+        elif int(goal) == 8:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "LargeCap"])]
@@ -587,7 +592,7 @@ async def generate_portfolio(investAmount=10_000,
     # assertive risk profile
     elif risk_profile == 4:
         # capital protection
-        if goal == 1:
+        if int(goal) == 1:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Balanced"])]
@@ -602,7 +607,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 2:
+        elif int(goal) == 2:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "Dividend"])]
@@ -617,7 +622,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["GILT", "Long", "GILTConstant", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 3:
+        elif int(goal) == 3:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Large&MidCap"])]
@@ -632,7 +637,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 4:
+        elif int(goal) == 4:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "Large&MidCap"])]
@@ -647,7 +652,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 5:
+        elif int(goal) == 5:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "Large&MidCap"])]
@@ -662,7 +667,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 6:
+        elif int(goal) == 6:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "LargeCap"])]
@@ -677,7 +682,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "GILT", "Long", "GILTConstant"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 7:
+        elif int(goal) == 7:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Balanced", "FlexiCap"])]
@@ -692,7 +697,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Conservative", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 8:
+        elif int(goal) == 8:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "MultiCap"])]
@@ -710,7 +715,7 @@ async def generate_portfolio(investAmount=10_000,
     # aggressive risk profile
     elif risk_profile == 5:
         # capital protection
-        if goal == 1:
+        if int(goal) == 1:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "Large&MidCap"])]
@@ -725,7 +730,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 2:
+        elif int(goal) == 2:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "FlexiCap"])]
@@ -740,7 +745,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 3:
+        elif int(goal) == 3:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Large&MidCap", "MidCap"])]
@@ -755,7 +760,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Aggressive", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 4:
+        elif int(goal) == 4:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Large&MidCap", "FlexiCap"])]
@@ -770,7 +775,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 5:
+        elif int(goal) == 5:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Large&MidCap", "LargeCap"])]
@@ -785,7 +790,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 6:
+        elif int(goal) == 6:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Large&MidCap", "LargeCap"])]
@@ -800,7 +805,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 7:
+        elif int(goal) == 7:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["LargeCap", "MultiCap"])]
@@ -815,7 +820,7 @@ async def generate_portfolio(investAmount=10_000,
             mf_asset_universe_tax = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["Corporate", "ELSS"])]
             algo_asset_universe_tax = "MinRisk-Classic-MV"
 
-        elif goal == 8:
+        elif int(goal) == 8:
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[mf_asset_universe["Sector"].isin(["FlexiCap", "MidCap"])]
@@ -836,10 +841,10 @@ async def generate_portfolio(investAmount=10_000,
              algo_asset_universe_3.split("-"),
              algo_asset_universe_tax.split("-")]
 
-    asset_universe = [
-        mf_asset_universe, mf_asset_universe_1, mf_asset_universe_2,
-        mf_asset_universe_3, mf_asset_universe_tax
-    ]
+    # asset_universe = [
+    #     mf_asset_universe, mf_asset_universe_1, mf_asset_universe_2,
+    #     mf_asset_universe_3, mf_asset_universe_tax
+    # ]
 
     data_per_universe = [
         data3.loc[:, data3.columns.isin(mf_asset_universe["ISIN"].to_list())],
