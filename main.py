@@ -849,6 +849,13 @@ async def generate_portfolio(investAmount=10_000,
         data3.loc[:, data3.columns.isin(mf_asset_universe_tax["ISIN"].to_list())]
     ]
 
+    if taxSaving == 'no':
+        algos = algos[:-1]
+        data_per_universe = data_per_universe[:-1]
+    else:
+        algos = algos[0] + algos[:-1]
+        data_per_universe = data_per_universe[0] + data_per_universe[:-1]
+
     # output json holding all the portfolio values, stats, and holdings
     final_output = {}
 
@@ -1093,10 +1100,6 @@ async def generate_portfolio(investAmount=10_000,
 
             return shp, weights
 
-        if taxSaving == 'no':
-            algos = algos[:-1]
-        else:
-            algos = algos[0] + algos[:-1]
 
         sharpe = {}
         portfolio = {}

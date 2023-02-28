@@ -1,7 +1,9 @@
-matplotlib==3.5.3
-numba==0.53.1
+fastapi==0.92.0
 numpy==1.21.6
 pandas==1.3.5
+plotly==5.13.0
+QuantStats==0.0.59
 Riskfolio_Lib==0.4.0
+SQLAlchemy==1.4.23
 vectorbt==0.16.1
-yfinance==0.1.63
+yfinance==0.2.12
