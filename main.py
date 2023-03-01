@@ -81,7 +81,7 @@ async def root():
 
 
 @app.get("/generate-portfolio")
-async def generate_portfolio(investAmount=10_000,
+async def generate_portfolio(investAmount=100_000,
                              goal=1,
                              taxSaving='no',
                              riskProfile=1,
@@ -1532,7 +1532,7 @@ async def generate_portfolio(investAmount=10_000,
             prep_args=(
                 252, ),  # Cambiando la frecuencia de rebalanceo de 21 a 252
             segment_prep_func_nb=segment_prep_func_nb,
-            segment_prep_args=(opt_weights, i, j, k, 252 * 5, ann_factor,
+            segment_prep_args=(opt_weights, i, j, k, 252 * 7, ann_factor,
                                num_tests, sharpe[k + "-" + j + "-" + i]),
             cash_sharing=True,
             group_by=True,
@@ -1545,7 +1545,7 @@ async def generate_portfolio(investAmount=10_000,
         weights = {}
 
         k, j, i = x[0], x[1], x[2]
-        a = portfolio[k + "-" + j + "-" + i].value().iloc[252 * 6:]
+        a = portfolio[k + "-" + j + "-" + i].value().iloc[252 * 8:]
         #     display(a.shape)
         b = a.pct_change().vbt.returns(freq='D').stats(0)
         w = portfolio[k + "-" + j + "-" + i].holding_value(
