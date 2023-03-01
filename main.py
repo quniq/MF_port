@@ -1316,13 +1316,13 @@ async def generate_portfolio(investAmount=100_000,
         invest_weights = []
 
         if invest_amount > 50_000:
-            invest_weights = [0.1, 0.25, 0.25]
+            invest_weights = [0.1, 0.3, 0.3]
         elif 50_000 >= invest_amount > 25_000:
-            invest_weights = [0.15, 0.25, 0.25]
+            invest_weights = [0.15, 0.3, 0.3]
         elif 25_000 >= invest_amount > 15_000:
-            invest_weights = [0.2, 0.25, 0.25]
+            invest_weights = [0.2, 0.3, 0.3]
         elif 15_000 >= invest_amount >= 10_000:
-            invest_weights = [0.25, 0.25, 0.25]
+            invest_weights = [0.3, 0.3, 0.25]
 
         constraints = {
             'Disabled': [False, False, False],
