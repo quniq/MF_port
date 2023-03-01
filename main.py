@@ -1256,11 +1256,16 @@ async def generate_portfolio(investAmount=100_000,
     ]
 
     data_per_universe = [
-        data3.loc[:, data3.columns.isin(mf_asset_universe["ISIN"].to_list())],
-        data3.loc[:, data3.columns.isin(mf_asset_universe_1["ISIN"].to_list())],
-        data3.loc[:, data3.columns.isin(mf_asset_universe_2["ISIN"].to_list())],
-        data3.loc[:, data3.columns.isin(mf_asset_universe_3["ISIN"].to_list())],
-        data3.loc[:, data3.columns.isin(mf_asset_universe_tax["ISIN"].to_list())]
+        data3.loc[:,
+                  data3.columns.isin(mf_asset_universe["ISIN"].to_list())],
+        data3.loc[:,
+                  data3.columns.isin(mf_asset_universe_1["ISIN"].to_list())],
+        data3.loc[:,
+                  data3.columns.isin(mf_asset_universe_2["ISIN"].to_list())],
+        data3.loc[:,
+                  data3.columns.isin(mf_asset_universe_3["ISIN"].to_list())],
+        data3.loc[:,
+                  data3.columns.isin(mf_asset_universe_tax["ISIN"].to_list())]
     ]
 
     portfolio_names = ["dummy", "Simple", "Classic", "Berrywise", "TaxSaving"]
@@ -1270,7 +1275,6 @@ async def generate_portfolio(investAmount=100_000,
 
     for _x, x in enumerate(algos):
         print("Selected algo: ", x)
-
         """
         Loading price data
         """
@@ -1312,13 +1316,13 @@ async def generate_portfolio(investAmount=100_000,
         invest_weights = []
 
         if invest_amount > 50_000:
-            invest_weights = [0.1, 0.5, 0.5]
+            invest_weights = [0.1, 0.25, 0.25]
         elif 50_000 >= invest_amount > 25_000:
-            invest_weights = [0.15, 0.5, 0.5]
+            invest_weights = [0.15, 0.25, 0.25]
         elif 25_000 >= invest_amount > 15_000:
-            invest_weights = [0.2, 0.5, 0.5]
+            invest_weights = [0.2, 0.25, 0.25]
         elif 15_000 >= invest_amount >= 10_000:
-            invest_weights = [0.25, 0.5, 0.5]
+            invest_weights = [0.25, 0.25, 0.25]
 
         constraints = {
             'Disabled': [False, False, False],
@@ -1510,12 +1514,12 @@ async def generate_portfolio(investAmount=100_000,
 
             return shp, weights
 
-
         sharpe = {}
         portfolio = {}
 
         k, j, i = x[0], x[1], x[2]
-        sharpe[k + "-" + j + "-" + i] = np.full(data_per_universe[_x].shape[0], np.nan)
+        sharpe[k + "-" + j + "-" + i] = np.full(data_per_universe[_x].shape[0],
+                                                np.nan)
         print(k + "-" + j + "-" + i)
 
         # print(data_per_universe[idx].dtypes, data_per_universe[idx].shape, type(data_per_universe[idx]))
@@ -1551,8 +1555,7 @@ async def generate_portfolio(investAmount=100_000,
         w = portfolio[k + "-" + j + "-" + i].holding_value(
             group_by=False).vbt / portfolio[k + "-" + j + "-" + i].value()
         idx = np.flatnonzero(
-            (portfolio[k + "-" + j + "-" + i].share_flow() != 0).any(
-                axis=1))
+            (portfolio[k + "-" + j + "-" + i].share_flow() != 0).any(axis=1))
         w = w.iloc[idx, :]
         values = pd.concat([values, a], axis=1, join='outer')
         stats = pd.concat([stats, b], axis=1)
@@ -1579,13 +1582,16 @@ async def generate_portfolio(investAmount=100_000,
             if j[1] != 0:
                 temp_bar_x.append(j[0])
                 temp_bar_y.append(j[1])
-        fig = go.Figure(data=[go.Bar(x=[i[:-3] for i in temp_bar_x[1:]], y=temp_bar_y[1:],
-                                    # hovertext=['27% market share', '24% market share', '19% market share']
-                                    )])
+        fig = go.Figure(data=[
+            go.Bar(
+                x=[i[:-3] for i in temp_bar_x[1:]],
+                y=temp_bar_y[1:],
+                # hovertext=['27% market share', '24% market share', '19% market share']
+            )
+        ])
         # fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
         #                   marker_line_width=1.5, opacity=0.6)
         # fig.show()
-
 
         import plotly.figure_factory as ff
         colorscale = [[0, '#272D31'], [.5, '#ffffff'], [1, '#ffffff']]
@@ -1611,8 +1617,8 @@ async def generate_portfolio(investAmount=100_000,
         pd_hodl.sort_values(by='%share', ascending=False)
 
         # map the pd_hodl equity names to their respective FundName from mf table
-        pd_hodl['MF'] = pd_hodl['MF'].map(mf_asset_universe.set_index('ISIN')['FundName'])
-
+        pd_hodl['MF'] = pd_hodl['MF'].map(
+            mf_asset_universe.set_index('ISIN')['FundName'])
 
         # structure the output for this algo in a json format
         algo_output = {}
