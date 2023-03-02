@@ -304,19 +304,21 @@ async def generate_portfolio(investAmount=100_000,
             # define the asset universes
 
             mf_asset_universe_1 = mf_asset_universe.loc[
-                mf_asset_universe["Sector"].isin(
-                    ["BankingPSU", "GILT", "Long", "GILTConstant"])]
+                mf_asset_universe["Sector"].isin([
+                    "BankingPSU", "GILT", "Long", "GILTConstant", "Medium",
+                    "MediumLong"
+                ])]
             algo_asset_universe_1 = "MinRisk-Classic-MV"
 
             mf_asset_universe_2 = mf_asset_universe.loc[
                 mf_asset_universe["Sector"].isin(
-                    ["BankingPSU", "GILT", "Long", "GILTConstant"])]
+                    ["BankingPSU", "GILT", "Long", "GILTConstant", "Medium", "MediumLong"])]
             algo_asset_universe_2 = "MaxRet-Classic-MV"
 
             mf_asset_universe_3 = mf_asset_universe.loc[
                 mf_asset_universe["Sector"].isin([
                     "GILT", "Long", "GILTConstant", "Corporate", "Medium",
-                    "MediumLong"
+                    "MediumLong", "Dynamic", "Floating"
                 ])]
             algo_asset_universe_3 = "MaxRet-Classic-MV"
 
@@ -558,12 +560,14 @@ async def generate_portfolio(investAmount=100_000,
 
             mf_asset_universe_1 = mf_asset_universe.loc[
                 mf_asset_universe["Sector"].isin(
-                    ["Conservative", "Balanced", "GILT", "Long"])]
+                    ["Conservative", "Balanced", "GILT", "Long", "Medium", "MediumLong", "GILTConstant"])]
             algo_asset_universe_1 = "MinRisk-Classic-MV"
 
             mf_asset_universe_2 = mf_asset_universe.loc[
-                mf_asset_universe["Sector"].isin(
-                    ["Conservative", "Balanced", "GILT", "Long"])]
+                mf_asset_universe["Sector"].isin([
+                    "Conservative", "Balanced", "GILT", "Long", "Medium",
+                    "MediumLong", "GILTConstant"
+                ])]
             algo_asset_universe_2 = "MaxRet-Classic-MV"
 
             mf_asset_universe_3 = mf_asset_universe.loc[
@@ -1107,8 +1111,7 @@ async def generate_portfolio(investAmount=100_000,
 
             mf_asset_universe_3 = mf_asset_universe.loc[
                 mf_asset_universe["Sector"].isin(
-                    ["FlexiCap", "MultiCap"
-                     "Large&MidCap", "MidCap"])]
+                    ["FlexiCap", "MultiCap", "Large&MidCap", "MidCap"])]
             algo_asset_universe_3 = "MaxRet-Classic-MV"
 
             mf_asset_universe_tax = mf_asset_universe.loc[
