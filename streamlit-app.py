@@ -3,6 +3,7 @@ import json
 import streamlit as st
 import pandas as pd
 import numpy as np
+import quantstats as qs
 
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
@@ -60,6 +61,8 @@ riskScores = {
 }
 
 finalRiskProfile = 0
+totalRiskScore = 0
+rpro = 0
 response = None
 
 # create session state
@@ -80,96 +83,33 @@ if 'response' not in st.session_state:
 # create a sidebar
 with st.sidebar:
 
-    # name = st.text_input('NAME')
-    age = st.select_slider('Age (Years)',
-                            options=[
-                                15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-                                27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                                39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-                                51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 'Above 60'
-                            ])
-    investAmount = st.number_input('Investment Amount', value=100_000)
-    duration = st.slider('Investment Duration (Years)',
-                            min_value=1,
-                            max_value=50)
+    # create a sidebar header
+    st.header('Portfolio Creation')
 
-    ### define the goals
-    # 1. Capital Protection - capital
-    # 2. Long-term Wealth Creation - longterm
-    # 3. High Risk, High Reward - highrisk
-    # 4. Building a Home - home
-    # 5. Retirement - retirement
-    # 6. Emergency Fund - emergency
-    # 7. Child's education - education
-    # 8. Income - income
+    # two buttons to switch between the simple and advanced portfolio creation
+    portfolioCreation = st.radio(
+        'Portfolio Creation Method',
+        ('Simple', 'Advanced'),
+        index=1,
+        key='portfolioCreation',
+        label_visibility='collapsed',
+        horizontal=True)
+    
+    # if simple portfolio creation is selected
+    if portfolioCreation == 'Simple':
+        st.subheader('Simple Portfolio Creation')
+        st.write('Choose your preferred risk profile')
+        finalRiskProfile = st.selectbox('Risk Profile',
+                                    RiskProfiles,
+                                    index=0,
+                                    key='riskProfile')
+        st.write('Choose your preferred investment amount')
+        investAmount = st.number_input('Investment Amount', value=100_000)
+        st.write('Choose your preferred investment goal')
+        goal = st.selectbox('Investment Goal', ('Capital Protection', 'Long-term Wealth Creation', 'High Risk, High Reward', 'Building a Home', 'Retirement', 'Emergency Fund', 'Child\'s education', 'Income'))
+        st.write('Choose your preferred tax saving')
+        taxSaving = st.selectbox('Tax Saving?', ('yes', 'no'), index=1)
 
-    goal = st.selectbox('Investment Goal', ('Capital Protection', 'Long-term Wealth Creation', 'High Risk, High Reward', 'Building a Home', 'Retirement', 'Emergency Fund', 'Child\'s education', 'Income'))
-
-    anticipate = st.selectbox(
-        "How much you anticipate needing a portion of your invested funds before completion "
-        "of "
-        "the duration of your investment?",
-        ('Less than 10%', 'Between 10% - 30%', 'Between 30% - 50%',
-            'More than 50%'))
-
-    investKnowledge = st.selectbox(
-        "How familiar are you with investment matters?",
-        ('Not familiar', 'Not very familiar', 'Somewhat familiar',
-            'Fairly familiar', 'Very familiar'))
-
-    secure = st.selectbox(
-        'How secure is your current and future income from sources such as salary, pensions or '
-        'other '
-        'investments?',
-        ('Not secure', 'Somewhat secure', 'Fairly secure', 'Very secure'))
-    totalInvest = st.selectbox(
-        'What is the proportion the amount you are investing respect of your total '
-        'investment '
-        'assets?', ('Less than 10%', 'Between 10% - 30%',
-                    'Between 30% - 50%', 'More than 50%'))
-
-    taxSaving = st.selectbox('Tax Saving?', ('yes', 'no'))
-
-    try:
-        # Age
-        if age == 'Above 60':
-            riskScores['age'] = 1
-        elif age >= 60:
-            riskScores['age'] = 1
-        elif 59 >= age >= 50:
-            riskScores['age'] = 3
-        elif 50 >= age >= 40:
-            riskScores['age'] = 5
-        elif 40 >= age >= 30:
-            riskScores['age'] = 7
-        elif 30 >= age >= 15:
-            riskScores['age'] = 9
-
-        # Investment Amount
-        if investAmount >= 10**7:
-            riskScores['investAmount'] = 9
-        elif 10**7 >= investAmount >= 10**7 * 0.75:
-            riskScores['investAmount'] = 7
-        elif 10**7 * 0.75 >= investAmount >= 10**7 * 0.5:
-            riskScores['investAmount'] = 5
-        elif 10**7 * 0.5 >= investAmount >= 10**7 * 0.25:
-            riskScores['investAmount'] = 3
-        elif 10**7 * 0.25 >= investAmount:
-            riskScores['investAmount'] = 1
-
-        # Duration of Investment
-        if duration >= 25:
-            riskScores['duration'] = 9
-        elif 25 >= duration >= 16:
-            riskScores['duration'] = 7
-        elif 15 >= duration >= 11:
-            riskScores['duration'] = 5
-        elif 10 >= duration >= 6:
-            riskScores['duration'] = 3
-        elif 5 >= duration >= 1:
-            riskScores['duration'] = 1
-
-        # Goal
         if goal == 'Capital Protection':
             riskScores['goal'] = 1
         elif goal == 'Long-term Wealth Creation':
@@ -187,102 +127,213 @@ with st.sidebar:
         elif goal == 'Income':
             riskScores['goal'] = 7
 
-        # anticipate
-        if anticipate == 'Less than 10%':
-            riskScores['anticipate'] = 9
-        elif anticipate == 'Between 10% - 30%':
-            riskScores['anticipate'] = 7
-        elif anticipate == 'Between 30% - 50%':
-            riskScores['anticipate'] = 3
-        elif anticipate == 'More than 50%':
-            riskScores['anticipate'] = 1
+        
+        
+    # if advanced portfolio creation is selected
+    elif portfolioCreation == 'Advanced':
+        # name = st.text_input('NAME')
+        age = st.select_slider('Age (Years)',
+                                options=[
+                                    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                                    27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+                                    39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+                                    51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 'Above 60'
+                                ])
+        investAmount = st.number_input('Investment Amount', value=100_000)
+        duration = st.slider('Investment Duration (Years)',
+                                min_value=1,
+                                max_value=50)
 
-        # Investment Knowledge
-        if investKnowledge == 'Not familiar':
-            riskScores['investKnowledge'] = 1
-        elif investKnowledge == 'Not very familiar':
-            riskScores['investKnowledge'] = 3
-        elif investKnowledge == 'Somewhat familiar':
-            riskScores['investKnowledge'] = 5
-        elif investKnowledge == 'Fairly familiar':
-            riskScores['investKnowledge'] = 7
-        elif investKnowledge == 'Very familiar':
-            riskScores['investKnowledge'] = 9
+        ### define the goals
+        # 1. Capital Protection - capital
+        # 2. Long-term Wealth Creation - longterm
+        # 3. High Risk, High Reward - highrisk
+        # 4. Building a Home - home
+        # 5. Retirement - retirement
+        # 6. Emergency Fund - emergency
+        # 7. Child's education - education
+        # 8. Income - income
 
-        # Security
-        if secure == 'Not secure':
-            riskScores['secure'] = 1
-        elif secure == 'Somewhat secure':
-            riskScores['secure'] = 3
-        elif secure == 'Fairly secure':
-            riskScores['secure'] = 5
-        elif secure == 'Very secure':
-            riskScores['secure'] = 7
+        goal = st.selectbox('Investment Goal', ('Capital Protection', 'Long-term Wealth Creation', 'High Risk, High Reward', 'Building a Home', 'Retirement', 'Emergency Fund', 'Child\'s education', 'Income'))
 
-        # Total Investment Proportion
-        if totalInvest == 'Less than 10%':
-            riskScores['totalInvest'] = 9
-        elif totalInvest == 'Between 10% - 30%':
-            riskScores['totalInvest'] = 7
-        elif totalInvest == 'Between 30% - 50%':
-            riskScores['totalInvest'] = 3
-        elif totalInvest == 'More than 50%':
-            riskScores['totalInvest'] = 1
+        anticipate = st.selectbox(
+            "How much you anticipate needing a portion of your invested funds before completion "
+            "of "
+            "the duration of your investment?",
+            ('Less than 10%', 'Between 10% - 30%', 'Between 30% - 50%',
+                'More than 50%'))
+
+        investKnowledge = st.selectbox(
+            "How familiar are you with investment matters?",
+            ('Not familiar', 'Not very familiar', 'Somewhat familiar',
+                'Fairly familiar', 'Very familiar'))
+
+        secure = st.selectbox(
+            'How secure is your current and future income from sources such as salary, pensions or '
+            'other '
+            'investments?',
+            ('Not secure', 'Somewhat secure', 'Fairly secure', 'Very secure'))
+        totalInvest = st.selectbox(
+            'What is the proportion the amount you are investing respect of your total '
+            'investment '
+            'assets?', ('Less than 10%', 'Between 10% - 30%',
+                        'Between 30% - 50%', 'More than 50%'))
+
+        taxSaving = st.selectbox('Tax Saving?', ('yes', 'no'), index=1)
+
+        try:
+            # Age
+            if age == 'Above 60':
+                riskScores['age'] = 1
+            elif age >= 60:
+                riskScores['age'] = 1
+            elif 59 >= age >= 50:
+                riskScores['age'] = 3
+            elif 50 >= age >= 40:
+                riskScores['age'] = 5
+            elif 40 >= age >= 30:
+                riskScores['age'] = 7
+            elif 30 >= age >= 15:
+                riskScores['age'] = 9
+
+            # Investment Amount
+            if investAmount >= 10**7:
+                riskScores['investAmount'] = 9
+            elif 10**7 >= investAmount >= 10**7 * 0.75:
+                riskScores['investAmount'] = 7
+            elif 10**7 * 0.75 >= investAmount >= 10**7 * 0.5:
+                riskScores['investAmount'] = 5
+            elif 10**7 * 0.5 >= investAmount >= 10**7 * 0.25:
+                riskScores['investAmount'] = 3
+            elif 10**7 * 0.25 >= investAmount:
+                riskScores['investAmount'] = 1
+
+            # Duration of Investment
+            if duration >= 25:
+                riskScores['duration'] = 9
+            elif 25 >= duration >= 16:
+                riskScores['duration'] = 7
+            elif 15 >= duration >= 11:
+                riskScores['duration'] = 5
+            elif 10 >= duration >= 6:
+                riskScores['duration'] = 3
+            elif 5 >= duration >= 1:
+                riskScores['duration'] = 1
+
+            # Goal
+            if goal == 'Capital Protection':
+                riskScores['goal'] = 1
+            elif goal == 'Long-term Wealth Creation':
+                riskScores['goal'] = 7
+            elif goal == 'High Risk, High Reward':
+                riskScores['goal'] = 9
+            elif goal == 'Building a Home':
+                riskScores['goal'] = 5
+            elif goal == 'Retirement':
+                riskScores['goal'] = 5
+            elif goal == 'Emergency Fund':
+                riskScores['goal'] = 3
+            elif goal == 'Child\'s education':
+                riskScores['goal'] = 5
+            elif goal == 'Income':
+                riskScores['goal'] = 7
+
+            # anticipate
+            if anticipate == 'Less than 10%':
+                riskScores['anticipate'] = 9
+            elif anticipate == 'Between 10% - 30%':
+                riskScores['anticipate'] = 7
+            elif anticipate == 'Between 30% - 50%':
+                riskScores['anticipate'] = 3
+            elif anticipate == 'More than 50%':
+                riskScores['anticipate'] = 1
+
+            # Investment Knowledge
+            if investKnowledge == 'Not familiar':
+                riskScores['investKnowledge'] = 1
+            elif investKnowledge == 'Not very familiar':
+                riskScores['investKnowledge'] = 3
+            elif investKnowledge == 'Somewhat familiar':
+                riskScores['investKnowledge'] = 5
+            elif investKnowledge == 'Fairly familiar':
+                riskScores['investKnowledge'] = 7
+            elif investKnowledge == 'Very familiar':
+                riskScores['investKnowledge'] = 9
+
+            # Security
+            if secure == 'Not secure':
+                riskScores['secure'] = 1
+            elif secure == 'Somewhat secure':
+                riskScores['secure'] = 3
+            elif secure == 'Fairly secure':
+                riskScores['secure'] = 5
+            elif secure == 'Very secure':
+                riskScores['secure'] = 7
+
+            # Total Investment Proportion
+            if totalInvest == 'Less than 10%':
+                riskScores['totalInvest'] = 9
+            elif totalInvest == 'Between 10% - 30%':
+                riskScores['totalInvest'] = 7
+            elif totalInvest == 'Between 30% - 50%':
+                riskScores['totalInvest'] = 3
+            elif totalInvest == 'More than 50%':
+                riskScores['totalInvest'] = 1
 
 
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
-    # local generated values
-    # print(riskScores)
-    totalRiskScore = sum(riskScores.values())
+        # local generated values
+        # print(riskScores)
+        totalRiskScore = sum(riskScores.values())
 
-    # Risk Profile brackets
-    if totalRiskScore >= 56:
-        finalRiskProfile = RiskProfiles[4]
-        tempMaxDraw = '23.70-33.79%'
-        tempExpReturnsScore = 5
-        tempMaxDrawScore = 5
-    elif 56 >= totalRiskScore >= 42:
-        finalRiskProfile = RiskProfiles[3]
-        tempMaxDraw = '17.63-23.70%'
-        tempExpReturnsScore = 4
-        tempMaxDrawScore = 4
-    elif 42 >= totalRiskScore >= 28:
-        finalRiskProfile = RiskProfiles[2]
-        tempMaxDraw = '13.15-17.63%'
-        tempExpReturnsScore = 3
-        tempMaxDrawScore = 3
-    elif 28 >= totalRiskScore >= 14:
-        finalRiskProfile = RiskProfiles[1]
-        tempMaxDraw = '11.21-13.15%'
-        tempExpReturnsScore = 2
-        tempMaxDrawScore = 2
-    elif 14 >= totalRiskScore >= 0:
-        finalRiskProfile = RiskProfiles[0]
-        tempMaxDraw = '9.78-11.21%'
-        tempExpReturnsScore = 1
-        tempMaxDrawScore = 1
+        # Risk Profile brackets
+        if totalRiskScore >= 56:
+            finalRiskProfile = RiskProfiles[4]
+            tempMaxDraw = '23.70-33.79%'
+            tempExpReturnsScore = 5
+            tempMaxDrawScore = 5
+        elif 56 >= totalRiskScore >= 42:
+            finalRiskProfile = RiskProfiles[3]
+            tempMaxDraw = '17.63-23.70%'
+            tempExpReturnsScore = 4
+            tempMaxDrawScore = 4
+        elif 42 >= totalRiskScore >= 28:
+            finalRiskProfile = RiskProfiles[2]
+            tempMaxDraw = '13.15-17.63%'
+            tempExpReturnsScore = 3
+            tempMaxDrawScore = 3
+        elif 28 >= totalRiskScore >= 14:
+            finalRiskProfile = RiskProfiles[1]
+            tempMaxDraw = '11.21-13.15%'
+            tempExpReturnsScore = 2
+            tempMaxDrawScore = 2
+        elif 14 >= totalRiskScore >= 0:
+            finalRiskProfile = RiskProfiles[0]
+            tempMaxDraw = '9.78-11.21%'
+            tempExpReturnsScore = 1
+            tempMaxDrawScore = 1
 
-    # print(totalRiskScore, finalRiskProfile)
+        # print(totalRiskScore, finalRiskProfile)
 
-    # # Auto Populated Section (Can be altered)
-    # with st.spinner("Loading ..."):
-    #     st.markdown("***")
-    #     expReturns = st.slider(
-    #         'Expected Returns (% p.a.) (Auto-generated)',
-    #         value=int(totalRiskScore // 3.2),
-    #         min_value=0,
-    #         max_value=25)
+        # # Auto Populated Section (Can be altered)
+        # with st.spinner("Loading ..."):
+        #     st.markdown("***")
+        #     expReturns = st.slider(
+        #         'Expected Returns (% p.a.) (Auto-generated)',
+        #         value=int(totalRiskScore // 3.2),
+        #         min_value=0,
+        #         max_value=25)
 
-    #     maxDraw = st.select_slider('Drawdown Tolerance (Auto-generated)',
-    #                                 value=tempMaxDraw,
-    #                                 options=[
-    #                                     '9.78-11.21%', '11.21-13.15%',
-    #                                     '13.15-17.63%', '17.63-23.70%',
-    #                                     '23.70-33'
-    #                                     '.79%'
-    #                                 ])
+        #     maxDraw = st.select_slider('Drawdown Tolerance (Auto-generated)',
+        #                                 value=tempMaxDraw,
+        #                                 options=[
+        #                                     '9.78-11.21%', '11.21-13.15%',
+        #                                     '13.15-17.63%', '17.63-23.70%',
+        #                                     '23.70-33'
+        #                                     '.79%'
+        #                                 ])
 
     # Update the session state
     st.session_state['finalRiskScore'] = totalRiskScore
@@ -299,24 +350,25 @@ with st.sidebar:
             taxSaving = st.session_state['taxSaving']
             riskProfile = st.session_state['finalRiskProfile']
 
+            # convert risk profile to integer
             if riskProfile == "Conservative":
-                riskProfile = 1
+                rpro = 1
             elif riskProfile == "Moderate":
-                riskProfile = 2
+                rpro = 2
             elif riskProfile == "Balanced":
-                riskProfile = 3
+                rpro = 3
+            elif riskProfile == "Assertive":
+                rpro = 4
             elif riskProfile == "Aggressive":
-                riskProfile = 4
-            elif riskProfile == "High Risk":
-                riskProfile = 5
-
-            # # show all session state values
+                rpro = 5
+    
+            # # # show all session state values
             # st.write('All session values:')
             # for key, value in st.session_state.items():
             #     st.write(f'{key}: {value}')
 
             # print all parameters passed to the function
-            st.success(f"Generating Portfolio for {investAmount} and tax saving: {taxSaving}")
+            st.success(f"Generating Portfolio for {investAmount} INR, {goal} Goal, {taxSaving} Tax Saving, {riskProfile} Risk Profile. The risk score is {totalRiskScore}")
 
             #### Portfolio Generation using API call
 
@@ -331,7 +383,7 @@ with st.sidebar:
                 "investAmount": investAmount,
                 "goal": goal,
                 "taxSaving": taxSaving,
-                "riskProfile": riskProfile,
+                "riskProfile": rpro,
                 "startDate": "2021-11-29",
                 "rbRule": "Y",
                 "rbWindow": "1260",
@@ -361,32 +413,37 @@ if st.session_state.get('response', None) is not None:
 
     # st.json(results)
 
-    if taxSaving == 'yes':
-        # show stats for the portfolio
-        st.markdown('## Portfolio Stats')
-        st.table(results['stats'])
+    if taxSaving == 'yes' and 'values' in results.keys():
+
         # convert the values to dataframe
         values_df = pd.DataFrame(results['values'])
         # convert the dates to datetime
         values_df['date'] = pd.to_datetime(values_df.index)
 
-
         # plot the values_df using plotly
-        st.markdown('## Portfolio Values Plot')
-        fig = px.line(values_df, x='date', y=values_df.columns, title='Portfolio Values')
+        st.markdown('## Tax Saving Portfolio Plot')
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=values_df['date'],
+                                    y=values_df[values_df.columns[0]],
+                                    name='Portfolio Value'))
+        fig.update_layout(title='',
+                            xaxis_title='Date',
+                            yaxis_title='Portfolio Value')
+
         st.plotly_chart(fig, use_container_width=True)
 
+        st.markdown('## Stats')
+        qs_input = values_df[values_df.columns[0]].pct_change().dropna()
+        # convert the series index to datetime
+        qs_input.index = pd.to_datetime(qs_input.index)
+        st.table(qs.reports.metrics(qs_input, mode='full'))
 
         # show the weights
-        st.markdown('## Portfolio Weights')
+        st.markdown('## Weights')
         st.table(results['pd_hodl'])
 
 
-        # # show the df
-        # st.markdown('## Portfolio Values')
-        # st.table(values_df.head())
-
-    else:            
+    elif 'Simple' in results.keys():
         results_1 = results['Simple']
         values_df1 = pd.DataFrame(results_1['values'])
         values_df1['date'] = pd.to_datetime(values_df1.index)
@@ -402,15 +459,15 @@ if st.session_state.get('response', None) is not None:
 
 
         # show the plots for all three portfolios in one plot
-        st.markdown('## All Portfolios')
+        st.markdown('## Portfolios')
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=values_df1['date'], y=values_df1[values_df1.columns[0]].to_list(), name='Simple'))
         fig.add_trace(go.Scatter(x=values_df2['date'], y=values_df2[values_df2.columns[0]].to_list(), name='Classic'))
         fig.add_trace(go.Scatter(x=values_df3['date'], y=values_df3[values_df3.columns[0]].to_list(), name='Berrywise'))
         st.plotly_chart(fig, use_container_width=True)
-        
-        
+
+
         # Three columns for the three portfolios
         col1, col2, col3 = st.columns(3)
 
@@ -421,11 +478,17 @@ if st.session_state.get('response', None) is not None:
             # st.plotly_chart(fig, use_container_width=True)
 
             # show the stats
-            st.markdown('## Portfolio Stats')
-            st.table(results_1['stats'])
+            st.markdown('## Simple')
+            # get the stats using qunatstats
+
+            qs_input_1 = values_df1[values_df1.columns[0]].pct_change().dropna()
+            # convert the series index to datetime
+            qs_input_1.index = pd.to_datetime(qs_input_1.index)
+            st.table(qs.reports.metrics(qs_input_1, mode='full'))
+
 
             # show the weights
-            st.markdown('## Portfolio Weights')
+            st.markdown('## Simple - Weights')
             st.table(results_1['pd_hodl'])
 
         with col2:
@@ -435,13 +498,18 @@ if st.session_state.get('response', None) is not None:
             # st.plotly_chart(fig, use_container_width=True)
 
             # show the stats
-            st.markdown('## Portfolio Stats')
-            st.table(results_2['stats'])
+            st.markdown('## Classic')
+            # get the stats using qunatstats
+
+            qs_input_2 = values_df2[values_df2.columns[0]].pct_change().dropna()
+            # convert the series index to datetime
+            qs_input_2.index = pd.to_datetime(qs_input_2.index)
+            st.table(qs.reports.metrics(qs_input_2, mode='full'))
 
             # show the weights
-            st.markdown('## Portfolio Weights')
+            st.markdown('## Classic - Weights')
             st.table(results_2['pd_hodl'])
-        
+
         with col3:
             # # plot the values_df using plotly
             # st.markdown('## Portfolio Values Plot')
@@ -449,10 +517,20 @@ if st.session_state.get('response', None) is not None:
             # st.plotly_chart(fig, use_container_width=True)
 
             # show the stats
-            st.markdown('## Portfolio Stats')
-            st.table(results_3['stats'])
+            st.markdown('## Berrywise')
+            # get the stats using qunatstats
+
+            qs_input_3 = values_df3[values_df3.columns[0]].pct_change().dropna()
+            # convert the series index to datetime
+            qs_input_3.index = pd.to_datetime(qs_input_3.index)
+            st.table(qs.reports.metrics(qs_input_3, mode='full'))
 
             # show the weights
-            st.markdown('## Portfolio Weights')
+            st.markdown('## Berrywise - Weights')
             st.table(results_3['pd_hodl'])
 
+    else:
+        st.warning("Please answer all questions to generate your portfolio")
+
+else:
+    st.warning("Please answer all questions to generate your portfolio")
