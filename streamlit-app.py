@@ -310,10 +310,10 @@ with st.sidebar:
             elif riskProfile == "High Risk":
                 riskProfile = 5
 
-            # show all session state values
-            st.write('All session values:')
-            for key, value in st.session_state.items():
-                st.write(f'{key}: {value}')
+            # # show all session state values
+            # st.write('All session values:')
+            # for key, value in st.session_state.items():
+            #     st.write(f'{key}: {value}')
 
             # print all parameters passed to the function
             st.success(f"Generating Portfolio for {investAmount} and tax saving: {taxSaving}")
