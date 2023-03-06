@@ -382,9 +382,9 @@ if st.session_state.get('response', None) is not None:
         st.table(results['pd_hodl'])
 
 
-        # show the df
-        st.markdown('## Portfolio Values')
-        st.table(values_df.head())
+        # # show the df
+        # st.markdown('## Portfolio Values')
+        # st.table(values_df.head())
 
     else:            
         results_1 = results['Simple']
